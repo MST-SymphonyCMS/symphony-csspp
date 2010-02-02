@@ -42,19 +42,19 @@ Class extension_csspp extends Extension
       
       // Find when the files where last edited
       $original_time = filemtime($original_filename);
-      $new_time = file_exists($new_filename)) ? filemtime($new_filename) : 0;
+      $new_time = file_exists($new_filename) ? filemtime($new_filename) : 0;
       // If the unprocessed CSS has been edited since our processed one, reprocessed it
-      if (filemtime($original_filename) > filemtime($new_filename))
+      if ($original_time > $new_time)
       {
         // Remove the old file
-        unlink($new_filename);
+        if ($new_time) { unlink($new_filename); }
         // Process the CSSP file
         $csspp = new CSSPP(basename($original_filename), dirname($original_filename) . '/');
         file_put_contents($new_filename, $csspp->process());
       }
       
       // Change all of the link tags
-      $new = str_replace("$file.css", "$file-processed.css?$new_time", $found[0][$i]);
+      $new = str_replace("$file.css", "$file-processed.css?" . filemtime($new_filename), $found[0][$i]);
       $context['output'] = str_replace($found[0][$i], $new, $context['output']);
     }
   }

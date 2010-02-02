@@ -10,7 +10,7 @@ Class extension_csspp extends Extension
   {
     return array(
       'name' => 'CSSPP',
-      'version' => '0.1',
+      'version' => '0.2',
       'release-date' => '2010-02-21',
       'author' => array(
         'name' => 'Jeremy Boles',

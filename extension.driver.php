@@ -42,8 +42,7 @@ Class extension_csspp extends Extension
       
       // Find when the files where last edited
       $original_time = filemtime($original_filename);
-      $new_time = filemtime($new_filename);
-
+      $new_time = file_exists($new_filename)) ? filemtime($new_filename) : 0;
       // If the unprocessed CSS has been edited since our processed one, reprocessed it
       if (filemtime($original_filename) > filemtime($new_filename))
       {

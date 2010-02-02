@@ -32,13 +32,30 @@ Class extension_csspp extends Extension
   
   public function replace_css(&$context)
   {
-    // <link type="text/css" rel="stylesheet" media="screen" href="/media/css/baseline.reset.css"/>
+    // Find all of the link tags
     preg_match_all('#<link\s[^>]*href=\"\/workspace\/media\/css\/([^\"]*).css\"[^>]*>#', $context['output'], $found);
     foreach ($found[1] as $i => $file)
     {
-      $csspp = new CSSPP("$file.css", DOCROOT . '/workspace/media/css/');
-      file_put_contents(DOCROOT . "/workspace/media/css/$file-processed.css" , $csspp->process());
-      $new = str_replace($file, "$file-processed", $found[0][$i]);
+      // Construct the filenames for the css files
+      $original_filename = DOCROOT . "/workspace/media/css/$file.css";
+      $new_filename = DOCROOT . "/workspace/media/css/$file-processed.css";
+      
+      // Find when the files where last edited
+      $original_time = filemtime($original_filename);
+      $new_time = filemtime($new_filename);
+
+      // If the unprocessed CSS has been edited since our processed one, reprocessed it
+      if (filemtime($original_filename) > filemtime($new_filename))
+      {
+        // Remove the old file
+        unlink($new_filename);
+        // Process the CSSP file
+        $csspp = new CSSPP(basename($original_filename), dirname($original_filename) . '/');
+        file_put_contents($new_filename, $csspp->process());
+      }
+      
+      // Change all of the link tags
+      $new = str_replace("$file.css", "$file-processed.css?$new_time", $found[0][$i]);
       $context['output'] = str_replace($found[0][$i], $new, $context['output']);
     }
   }

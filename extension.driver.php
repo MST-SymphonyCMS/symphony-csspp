@@ -6,6 +6,7 @@ Class extension_csspp extends Extension
 {
   public $workspace_position = NULL;
   
+  // Return info about the extension to Symphony
   public function about()
   {
     return array(
@@ -20,6 +21,7 @@ Class extension_csspp extends Extension
     );
   }
   
+  // The delegate method for adding our preferences UI to Symphony
   public function appendPreferences($context)
   {
     $group = new XMLElement('fieldset');
@@ -43,6 +45,7 @@ Class extension_csspp extends Extension
     $context['wrapper']->appendChild($group);
   }
   
+  // Tell Symphony what our delegates are
   public function getSubscribedDelegates()
   {
     return array(
@@ -62,6 +65,8 @@ Class extension_csspp extends Extension
     );
   }
   
+  // Our delegate method replacing the <link> tags in the output front-end
+  // with <link> tags with the compiled CSS
   public function replaceCSS($context)
   {
     // Find all of the link tags
@@ -101,6 +106,7 @@ Class extension_csspp extends Extension
     }
   }
   
+  // Our delegate method for saving our preferences
   public function savePreferences($context)
   {
     // Delete all of the exsisting processed files

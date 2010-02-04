@@ -4,6 +4,7 @@ require(dirname(__FILE__) . '/csspp/csspp.php');
 
 Class extension_csspp extends Extension
 {
+  const CSS_DIR = '/workspace/media/css';
   public $workspace_position = NULL;
   
   // Return info about the extension to Symphony
@@ -70,12 +71,12 @@ Class extension_csspp extends Extension
   public function replaceCSS($context)
   {
     // Find all of the link tags
-    preg_match_all('#<link\s[^>]*href=\"\/workspace\/media\/css\/([^\"]*).css\"[^>]*>#', $context['output'], $found);
+    preg_match_all('#<link\s[^>]*href=\"' . str_replace('/', '\/', self::CSS_DIR) . '\/([^\"]*).css\"[^>]*>#', $context['output'], $found);
     foreach ($found[1] as $i => $file)
     {
       // Construct the filenames for the css files
-      $original_filename = DOCROOT . "/workspace/media/css/$file.css";
-      $new_filename = DOCROOT . "/workspace/media/css/$file-processed.css";
+      $original_filename = DOCROOT . self::CSS_DIR . "/$file.css";
+      $new_filename = DOCROOT . self::CSS_DIR . "/$file-processed.css";
       
       // Find when the files where last edited
       $original_time = filemtime($original_filename);
@@ -142,4 +143,5 @@ Class extension_csspp extends Extension
       }
     }
   }
+  
 }
